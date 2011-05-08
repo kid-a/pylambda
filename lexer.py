@@ -6,13 +6,18 @@ from ply.lex import LexError
 tokens = [
     'VARIABLE',
     'LPAREN',
-    'RPAREN'
+    'RPAREN',
+    'BACKSLASH'
     ]
 
 literals = ['(', ')', '\\', '.']
 
 def t_VARIABLE (t):
     r'[a-z]'
+    return t
+
+def t_BACKSLASH (t):
+    r'\\'
     return t
 
 if __name__ == "__main__":
