@@ -5,10 +5,12 @@ import ply.yacc as yacc
 from lexer import *
 
 # GRAMMAR SPECIFICATION
+# Program ::= Term
+#
 # Term ::= "(" Term ")"
 #        | VARIABLE
 #        | Term Term
-#        | '\\' VARIABLE '.' Term  
+#        | '\\' VARIABLE '.' Term
 
 class Variable:
     def __init__ (self, uName):
@@ -17,13 +19,26 @@ class Variable:
     def __str__ (self):
         return str (self._name)
 
+    def __eq__ (self, other):
+        if isinstance (other, Variable):
+            if other._name == self._name:
+                return True
+        return False
+
 class Application:
     def __init__ (self, uFirst, uSecond):
         self._first = uFirst
         self._second = uSecond
         
     def __str__ (self):
-        return '(' + str (self._first) + ')' + '(' + str (self._second) + ')'
+        #return '(' + str (self._first) + ')' + '(' + str (self._second) + ')'
+        return str (self._first) + str (self._second)
+
+    def __eq__ (self, other):
+        if isinstance (other, Application):
+            return (other._first == self._first) and \
+                (other._second == self._second)
+        return False
 
 class Abstraction:
     def __init__ (self, uVariable, uBody):
@@ -31,7 +46,14 @@ class Abstraction:
         self._body = uBody
 
     def __str__ (self):
-        return '\\' + str (self._variable) + '.' + str (self._body)
+        return '(\\' + str (self._variable) + '.' + str (self._body) + ')'
+
+    def __eq__ (self, other):
+        if isinstance (other, Abstraction):
+            return (other._variable == self._variable) and \
+                (other._body == self._body)
+        return False
+        
 
 def p_start (p):
     ''' Program : Term '''
@@ -99,16 +121,26 @@ def beta_reduce (uTerm):
     elif isinstance (uTerm, Abstraction):
         return uTerm
 
+    ## leftmost-outermost choice of redex
     elif isinstance (uTerm, Application):
-        uTerm._first = beta_reduce (uTerm._first)
-        uTerm._second = beta_reduce (uTerm._second)
-        
         if isinstance (uTerm._first, Abstraction):
-            return beta_reduce (substitute (uTerm._first._body,
-                                            uTerm._first._variable,
-                                            uTerm._second))
-        else: return uTerm
-        
+            return substitute (uTerm._first._body,
+                               uTerm._first._variable,
+                               uTerm._second)
+        else:
+            uTerm._first = beta_reduce (uTerm._first)
+            # uTerm._second = beta_reduce (uTerm._second)
+            return uTerm
+
+def multi_step_beta_reduce (uTerm):
+    if isinstance (uTerm, Variable) or isinstance (uTerm, Abstraction):
+        return uTerm
+
+    elif isinstance (uTerm, Application):
+        t = beta_reduce (uTerm)
+        while (True):
+            new_t = beta_reduce (t)
+            if t == new_t: return t
         
 if __name__ == "__main__":
     lexer = lex.lex ()
