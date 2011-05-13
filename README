@@ -1,0 +1,56 @@
+
+pylambda: a lambda calculus interpreter written in python
+
+1. Dependencies
+---------------
+
+pylamdbda relies on PLY (Python Lex Yacc). 
+You can find it at http://www.dabeaz.com/ply/
+
+2. Running the interpreter
+--------------------------
+
+From your shell, type 
+
+$ make run
+
+and you will enter the pylambda interpreter, whose prompt consist
+of three '>', just like the python shell.
+Time to play:
+
+>>> (\x.x)
+(\x.x)
+
+So, what happened here? We have entered the term (\x.x) ('\' is an
+alias for 'lambda') and we got the same term back. If you think about it,
+(\x.x) is in 'normal form', so it cannot be 'reduced'.
+
+Let's try with something more complicated:
+
+>>>((\x.xx))(\a.az)z
+(\x.xx)(\a.az)z  ->  (\a.az)z(\a.az)z
+(\a.az)z(\a.az)z  ->  zz(\a.zz)z
+zz(\a.zz)z  ->  zzzz
+zzzz
+
+Here, the interpreter picked up the expression we entered and 'reduced'
+it to its 'normal form', via a multi-step 'beta reduction'. 
+As one can notice, the choice of the 'redex' to reduce at every step
+is made following a 'leftmost-outermost' strategy.
+
+
+3. Future work
+--------------
+
+pylambda is in its very early stages. It needs
+
+- better handling of lexical and syntax errors
+- a suite of tests
+- some *good* doc
+
+Moreover, it would be nice to provide, with the next releases,
+support for the following stuff:
+
+- alpha-conversion
+- church numerals
+- typed lambda calculus

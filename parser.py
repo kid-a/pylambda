@@ -140,7 +140,6 @@ def beta_reduce (uTerm):
                 return uTerm
             else: 
                 uTerm._second = beta_reduce (uTerm._second)
-                print uTerm._second
                 return uTerm
             
 
