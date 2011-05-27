@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import copy
 import ply.lex as lex
 import ply.yacc as yacc
 from lexer import *
@@ -24,6 +25,10 @@ class Variable:
             if other._name == self._name:
                 return True
         return False
+
+    def unify (self, uTerm):
+        pass
+        
 
 class Application:
     def __init__ (self, uFirst, uSecond):
@@ -104,7 +109,7 @@ def free_vars (uTerm):
 def substitute (uTerm, uToSubstitute, uNewTerm):
     if isinstance (uTerm, Variable):
         if uTerm._name == uToSubstitute:
-            return uNewTerm
+            return copy.deepcopy (uNewTerm)
 
     elif isinstance (uTerm, Application):
         uTerm._first = substitute (uTerm._first, uToSubstitute, uNewTerm)
@@ -114,7 +119,7 @@ def substitute (uTerm, uToSubstitute, uNewTerm):
         if uTerm._variable == uToSubstitute:
             uTerm._body = substitute (uTerm._body, uToSubstitute, uNewTerm)
 
-    return uTerm
+    return copy.deepcopy (uTerm)
 
 
 def beta_reduce (uTerm):
