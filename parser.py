@@ -13,6 +13,7 @@ from lexer import *
 #        | Term Term
 #        | '\\' VARIABLE '.' Term
 
+
 class Variable:
     def __init__ (self, uName):
         self._name = uName
@@ -27,7 +28,9 @@ class Variable:
         return False
 
     def unify (self, uTerm):
-        pass
+        if not isinstance (uTerm, Variable):
+            return False
+        return {self._name: uTerm._name}
         
 
 class Application:
@@ -45,6 +48,9 @@ class Application:
                 (other._second == self._second)
         return False
 
+    def check_type (self, uTerm):
+        return isinstance (uTerm, Application)
+
 class Abstraction:
     def __init__ (self, uVariable, uBody):
         self._variable = uVariable
@@ -58,6 +64,9 @@ class Abstraction:
             return (other._variable == self._variable) and \
                 (other._body == self._body)
         return False
+
+    def check_type (self, uTerm):
+        return isinstance (uTerm, Abstraction)
         
 
 def p_start (p):
@@ -179,3 +188,23 @@ if __name__ == "__main__":
         try: s = raw_input ('>>>')
         except EOFError: break
         parser.parse (s)
+
+## tests
+## unify tests
+def unify_test ():
+    term1 = Variable ('a')
+    term2 = Variable ('b')
+    unification_result = term1.unify (term2)
+
+    for term_to_substitute in unification_result:
+        new_term = unification_result [term_to_substitute]
+        term1 = substitute (term1, term_to_substitute, new_term)
+        
+    print term1
+    
+        
+
+    
+    
+    
+
