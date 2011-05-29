@@ -27,10 +27,13 @@ class Variable:
                 return True
         return False
 
+    def __hash__ (self):
+        return hash (self._name)
+
     def unify (self, uTerm):
         if not isinstance (uTerm, Variable):
             return False
-        return {self._name: uTerm._name}
+        return {Variable (self._name) : Variable (uTerm._name)}
         
 
 class Application:
@@ -48,6 +51,9 @@ class Application:
                 (other._second == self._second)
         return False
 
+    def __hash__ (self):
+        return hash ((self._first, self._second))
+
 
 class Abstraction:
     def __init__ (self, uVariable, uBody):
@@ -62,6 +68,9 @@ class Abstraction:
             return (other._variable == self._variable) and \
                 (other._body == self._body)
         return False
+
+    def __hash__ (self):
+        return hash ((self._variable, self._body))
 
     def unify (self, uTerm):
         if not isinstance (uTerm, Abstraction):
@@ -136,20 +145,18 @@ def free_vars (uTerm):
 
 def substitute (uTerm, uToSubstitute, uNewTerm):
     if isinstance (uTerm, Variable):
-        if uTerm._name == uToSubstitute:
+        if uTerm._name == uToSubstitute._name:
             return copy.deepcopy (uNewTerm)
-
+            
     elif isinstance (uTerm, Application):
         uTerm._first = substitute (uTerm._first, uToSubstitute, uNewTerm)
         uTerm._second = substitute (uTerm._second, uToSubstitute, uNewTerm)
 
     elif isinstance (uTerm, Abstraction):
         if uTerm._variable == uToSubstitute:
-            uTerm._body = substitute (uTerm._body, uToSubstitute, uNewTerm)
-            
-    ## !FIXME what if the variable to substitute is free whithin the body
-    ## of the abstraction?
-
+            uTerm._variable = substitute (uTerm._variable, uToSubstitute, uNewTerm)
+        uTerm._body = substitute (uTerm._body, uToSubstitute, uNewTerm)
+        
     return copy.deepcopy (uTerm)
 
 
@@ -214,9 +221,15 @@ if __name__ == "__main__":
 ## tests
 ## unify tests
 def tests ():
+    substitute_test_1 ()
     unify_test_1 ()
     unify_test_2 ()
     unify_test_3 ()
+
+def substitute_test_1 ():
+    term1 = Abstraction (Variable('y'), Variable ('y'))
+    term1 = substitute (term1, Variable ('y'), Variable('z'))
+    print term1
 
 
 def unify_test_1 ():
@@ -230,7 +243,7 @@ def unify_test_1 ():
         
     print term1
 
-def unify_test_2 (): ## ! FIXME not working
+def unify_test_2 ():
     term1 = Abstraction (Variable ('x'), Variable ('x'))
     term2 = Abstraction (Variable ('y'), Variable ('y'))
     unification_result = term1.unify (term2)
@@ -245,6 +258,8 @@ def unify_test_3 (): ## ! FIXME not working
     term1 = Abstraction (Variable ('x'), Variable ('a'))
     term2 = Abstraction (Variable ('y'), Variable ('y'))
     unification_result = term1.unify (term2)
+
+    print unification_result
 
     for term_to_substitute in unification_result:
         new_term = unification_result [term_to_substitute]
