@@ -33,7 +33,7 @@ class Variable:
     def unify (self, uTerm):
         if not isinstance (uTerm, Variable):
             return False
-        return {Variable (self._name) : Variable (uTerm._name)}
+        return (Variable (self._name), Variable (uTerm._name))
         
 
 class Application:
@@ -84,16 +84,25 @@ class Abstraction:
         
         ## check, whether a clash exists, that the substitution
         ## to perform is the same
-        for sub in head_substitutions:
-            try:
-                new_term = body_substitutions [sub]
-                if new_term == head_substitutions [sub]: continue
-                else: return False
+        # for sub in head_substitutions:
+        #     if sub in body_substitutions:
+        #         (to_subtitute, new_term) = sub
+                
+                
+                
 
-            except: continue
+
+
+            # try:
+            #     new_term = body_substitutions [sub]
+            #     if new_term == head_substitutions [sub]: continue
+            #     else: return False
+
+            # except: continue
      
         ## return the merged dict of substitutions
-        body_substitutions.update (head_substitutions)
+        for s in head_substitutions:
+            body_substitutions.append (s)
         return body_substitutions
         
 
@@ -214,9 +223,14 @@ if __name__ == "__main__":
     parser = yacc.yacc ()
     
     while True:
-        try: s = raw_input ('>>>')
-        except EOFError: break
-        parser.parse (s)
+        try:
+            s = raw_input ('\\>')
+            if s == "": continue
+            parser.parse (s)
+
+        except EOFError:
+            print ""
+            break
 
 ## tests
 ## unify tests
@@ -267,8 +281,14 @@ def unify_test_3 (): ## ! FIXME not working
         
     print term1
     
-        
-
+def hash_test_1 ():
+    term1 = Variable ('x')
+    term2 = Variable ('x')
+    print term1.__hash__ ()
+    print term2.__hash__ ()
+    d = { term1 : '1',
+          term2 : '2' }
+    print d
     
     
     
