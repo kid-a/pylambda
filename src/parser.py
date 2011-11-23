@@ -5,6 +5,25 @@ import ply.lex as lex
 import ply.yacc as yacc
 from lexer import *
 
+l = """
+                      o                  o         o
+ ##                   O                  O         O
+#  #                  o                  O         o
+#  #                  O                  o         o
+   #      .oOo. O   o o  .oOoO' `oOOoOO. OoOo. .oOoO  .oOoO'
+   #      O   o o   O O  O   o   O  o  o O   o o   O  O   o
+   ##     o   O O   o o  o   O   o  O  O o   O O   o  o   O
+  ###     oOoO' `OoOO Oo `OoO'o  O  o  o `OoO' `OoO'o `OoO'o
+  # #     O         o
+ #  #     o'     OoO'                                        
+ #   ##
+
+Welcome to pylambda 0.01 (2011-11-23) <http://github.com/kid-a/pylambda>
+Press CTRL+D to exit
+"""
+
+## !FIXME Create a "Parser" class...
+
 # GRAMMAR SPECIFICATION
 # Program ::= Term
 #
@@ -34,13 +53,13 @@ class Variable:
         if not isinstance (uTerm, Variable):
             return False
         return (Variable (self._name), Variable (uTerm._name))
-        
+
 
 class Application:
     def __init__ (self, uFirst, uSecond):
         self._first = uFirst
         self._second = uSecond
-        
+
     def __str__ (self):
         #return '(' + str (self._first) + ')' + '(' + str (self._second) + ')'
         return str (self._first) + str (self._second)
@@ -75,21 +94,21 @@ class Abstraction:
     def unify (self, uTerm):
         if not isinstance (uTerm, Abstraction):
             return False
-     
+
         ## calculate the substitutions for the body of the abstraction
         body_substitutions = self._body.unify (uTerm._body)
-        
+
         ## then do the same for the head
         head_substitutions = self._variable.unify (uTerm._variable)
-        
+
         ## check, whether a clash exists, that the substitution
         ## to perform is the same
         # for sub in head_substitutions:
         #     if sub in body_substitutions:
         #         (to_subtitute, new_term) = sub
-                
-                
-                
+
+
+
 
 
 
@@ -99,32 +118,32 @@ class Abstraction:
             #     else: return False
 
             # except: continue
-     
+
         ## return the merged dict of substitutions
         for s in head_substitutions:
             body_substitutions.append (s)
         return body_substitutions
-        
+
 
 def p_start (p):
     ''' Program : Term '''
     # print "Bound Variables are: ", bound_vars (p[1])
     # print "Free Variables are: ", free_vars (p[1])
     print multi_step_beta_reduce (p[1])
-    
+
 
 def p_paren (p):
     ''' Term : '(' Term ')' '''
     p[0] = p[2]
-    
+
 def p_variable (p):
     ''' Term : VARIABLE '''
     p[0] = Variable (p[1])
-    
+
 def p_application (p):
     ''' Term : Term Term '''
     p[0] = Application (p[1], p[2])
-    
+
 def p_abstraction (p):
     ''' Term : BACKSLASH VARIABLE '.' Term '''
     p[0] = Abstraction (p[2], p[4])
@@ -156,7 +175,7 @@ def substitute (uTerm, uToSubstitute, uNewTerm):
     if isinstance (uTerm, Variable):
         if uTerm._name == uToSubstitute._name:
             return copy.deepcopy (uNewTerm)
-            
+
     elif isinstance (uTerm, Application):
         uTerm._first = substitute (uTerm._first, uToSubstitute, uNewTerm)
         uTerm._second = substitute (uTerm._second, uToSubstitute, uNewTerm)
@@ -165,7 +184,7 @@ def substitute (uTerm, uToSubstitute, uNewTerm):
         if uTerm._variable == uToSubstitute:
             uTerm._variable = substitute (uTerm._variable, uToSubstitute, uNewTerm)
         uTerm._body = substitute (uTerm._body, uToSubstitute, uNewTerm)
-        
+
     return copy.deepcopy (uTerm)
 
 
@@ -187,13 +206,13 @@ def beta_reduce (uTerm):
             ## leftmost
             new_first = beta_reduce (uTerm._first)
             ##print new_first, " ", uTerm._first
-            if new_first != uTerm._first: 
+            if new_first != uTerm._first:
                 uTerm._first = new_first
                 return uTerm
-            else: 
+            else:
                 uTerm._second = beta_reduce (uTerm._second)
                 return uTerm
-            
+
 
 
 def multi_step_beta_reduce (uTerm):
@@ -217,11 +236,14 @@ def multi_step_beta_reduce (uTerm):
             else:
                 reductions.append ((t_str, new_t_str))
                 t = new_t
-        
+
 if __name__ == "__main__":
+    print l
+
+
     lexer = lex.lex ()
     parser = yacc.yacc ()
-    
+
     while True:
         try:
             s = raw_input ('\\>')
@@ -231,65 +253,4 @@ if __name__ == "__main__":
         except EOFError:
             print ""
             break
-
-## tests
-## unify tests
-def tests ():
-    substitute_test_1 ()
-    unify_test_1 ()
-    unify_test_2 ()
-    unify_test_3 ()
-
-def substitute_test_1 ():
-    term1 = Abstraction (Variable('y'), Variable ('y'))
-    term1 = substitute (term1, Variable ('y'), Variable('z'))
-    print term1
-
-
-def unify_test_1 ():
-    term1 = Variable ('a')
-    term2 = Variable ('b')
-    unification_result = term1.unify (term2)
-
-    for term_to_substitute in unification_result:
-        new_term = unification_result [term_to_substitute]
-        term1 = substitute (term1, term_to_substitute, new_term)
-        
-    print term1
-
-def unify_test_2 ():
-    term1 = Abstraction (Variable ('x'), Variable ('x'))
-    term2 = Abstraction (Variable ('y'), Variable ('y'))
-    unification_result = term1.unify (term2)
-
-    for term_to_substitute in unification_result:
-        new_term = unification_result [term_to_substitute]
-        term1 = substitute (term1, term_to_substitute, new_term)
-        
-    print term1 
-
-def unify_test_3 (): ## ! FIXME not working
-    term1 = Abstraction (Variable ('x'), Variable ('a'))
-    term2 = Abstraction (Variable ('y'), Variable ('y'))
-    unification_result = term1.unify (term2)
-
-    print unification_result
-
-    for term_to_substitute in unification_result:
-        new_term = unification_result [term_to_substitute]
-        term1 = substitute (term1, term_to_substitute, new_term)
-        
-    print term1
-    
-def hash_test_1 ():
-    term1 = Variable ('x')
-    term2 = Variable ('x')
-    print term1.__hash__ ()
-    print term2.__hash__ ()
-    d = { term1 : '1',
-          term2 : '2' }
-    print d
-    
-    
-    
 
