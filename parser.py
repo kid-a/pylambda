@@ -1,28 +1,7 @@
 #!/usr/bin/python
 
 import copy
-import ply.lex as lex
 import ply.yacc as yacc
-from lexer import *
-
-l = """
-                      o                  o         o
- ##                   O                  O         O
-#  #                  o                  O         o
-#  #                  O                  o         o
-   #      .oOo. O   o o  .oOoO' `oOOoOO. OoOo. .oOoO  .oOoO'
-   #      O   o o   O O  O   o   O  o  o O   o o   O  O   o
-   ##     o   O O   o o  o   O   o  O  O o   O O   o  o   O
-  ###     oOoO' `OoOO Oo `OoO'o  O  o  o `OoO' `OoO'o `OoO'o
-  # #     O         o
- #  #     o'     OoO'                                        
- #   ##
-
-Welcome to pylambda 0.01 (2011-11-23) <http://github.com/kid-a/pylambda>
-Press CTRL+D to exit
-"""
-
-## !FIXME Create a "Parser" class...
 
 # GRAMMAR SPECIFICATION
 # Program ::= Term
@@ -148,6 +127,7 @@ def p_abstraction (p):
     ''' Term : BACKSLASH VARIABLE '.' Term '''
     p[0] = Abstraction (p[2], p[4])
 
+## !FIXME move anything but the rules out of here
 
 def bound_vars (uTerm):
     if isinstance (uTerm, Variable):
@@ -236,21 +216,4 @@ def multi_step_beta_reduce (uTerm):
             else:
                 reductions.append ((t_str, new_t_str))
                 t = new_t
-
-if __name__ == "__main__":
-    print l
-
-
-    lexer = lex.lex ()
-    parser = yacc.yacc ()
-
-    while True:
-        try:
-            s = raw_input ('\\>')
-            if s == "": continue
-            parser.parse (s)
-
-        except EOFError:
-            print ""
-            break
 
