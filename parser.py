@@ -7,8 +7,6 @@ from terms import Variable as Variable
 from terms import Application as Application
 from terms import Abstraction as Abstraction 
 
-from operations import bound_vars
-
 # GRAMMAR SPECIFICATION
 # Program ::= Term
 #
@@ -20,10 +18,7 @@ from operations import bound_vars
 
 def p_start (p):
     ''' Program : Term '''
-    # print "Bound Variables are: ", bound_vars (p[1])
-    # print "Free Variables are: ", free_vars (p[1])
-    # print multi_step_beta_reduce (p[1])
-    print bound_vars (p[1])
+    return p[1]
 
 
 def p_paren (p):

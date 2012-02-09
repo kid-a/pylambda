@@ -2,8 +2,11 @@
 
 import ply.lex as lex
 import ply.yacc as yacc
+
 from lexer import *
 from parser import *
+
+from operations import bound_vars
 
 l = """
                       o                  o         o
@@ -31,9 +34,11 @@ if __name__ == "__main__":
 
     while True:
         try:
-            s = raw_input ('\\>')
+            s = raw_input ('>>>')
             if s == "": continue
-            parser.parse (s)
+            term = parser.parse (s)
+            print "Bound Variables are: ", bound_vars (term)
+            
 
         except EOFError:
             #print "\nExiting. Bye!"

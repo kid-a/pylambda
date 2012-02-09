@@ -1,4 +1,3 @@
-
 from terms import Variable as Variable
 from terms import Application as Application
 from terms import Abstraction as Abstraction
