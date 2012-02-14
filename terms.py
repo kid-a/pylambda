@@ -1,4 +1,4 @@
-class Variable:
+class Variable (object):
     def __init__ (self, uName):
         self._name = uName
 
@@ -20,7 +20,7 @@ class Variable:
     #     return (Variable (self._name), Variable (uTerm._name))
 
 
-class Application:
+class Application (object):
     def __init__ (self, uFirst, uSecond):
         self._first = uFirst
         self._second = uSecond
@@ -39,7 +39,7 @@ class Application:
     #     return hash ((self._first, self._second))
 
 
-class Abstraction:
+class Abstraction (object):
     def __init__ (self, uVariable, uBody):
         self._variable = uVariable
         self._body = uBody
