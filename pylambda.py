@@ -5,6 +5,7 @@ import ply.yacc as yacc
 
 from lexer import *
 from parser import *
+from utilities import *
 
 from operations import bound_vars
 
@@ -31,14 +32,18 @@ if __name__ == "__main__":
 
     lexer = lex.lex ()
     parser = yacc.yacc ()
+    history = CommandHistory ()
 
     while True:
         try:
             s = raw_input ('>>>')
             if s == "": continue
+
+            history.add (s)
             term = parser.parse (s)
+
+            ## actual computation
             print "Bound Variables are: ", bound_vars (term)
-            
 
         except EOFError:
             #print "\nExiting. Bye!"
