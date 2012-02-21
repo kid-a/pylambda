@@ -1,7 +1,11 @@
 EXEC=pylambda
+TEST=tests
 
 run:
 	python $(EXEC).py
+
+unit-test:
+	python $(TEST).py
 
 clean:
 	-rm *.pyc *~
