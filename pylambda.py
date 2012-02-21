@@ -5,48 +5,60 @@ import ply.yacc as yacc
 
 from lexer import *
 from parser import *
-from utilities import *
 
-from algorithms import bound_vars
+from algorithms import multi_step_beta_reduce
 
-# import cmd
+import cmd
+import time
 
-# lexer = None
-# parser = None
+PROMPT = '>>>'
+INTRO_STR = \
+"""
+                      o                  o         o
+ ##                   O                  O         O
+#  #                  o                  O         o
+#  #                  O                  o         o
+   #      .oOo. O   o o  .oOoO' `oOOoOO. OoOo. .oOoO  .oOoO'
+   #      O   o o   O O  O   o   O  o  o O   o o   O  O   o
+   ##     o   O O   o o  o   O   o  O  O o   O O   o  o   O
+  ###     oOoO' `OoOO Oo `OoO'o  O  o  o `OoO' `OoO'o `OoO'o
+  # #     O         o
+ #  #     o'     OoO'                                        
+ #   ##
 
-# class PLCommandLine (cmd.Cmd):
-#     """Command line processor for PyLambda."""
-#     def __init__(self, *args, **kwargs):
-#         cmd.Cmd.__init__ (self)
-#         self.prompt = '>>>'
-#         self.intro = \
-# """
-#                       o                  o         o
-#  ##                   O                  O         O
-# #  #                  o                  O         o
-# #  #                  O                  o         o
-#    #      .oOo. O   o o  .oOoO' `oOOoOO. OoOo. .oOoO  .oOoO'
-#    #      O   o o   O O  O   o   O  o  o O   o o   O  O   o
-#    ##     o   O O   o o  o   O   o  O  O o   O O   o  o   O
-#   ###     oOoO' `OoOO Oo `OoO'o  O  o  o `OoO' `OoO'o `OoO'o
-#   # #     O         o
-#  #  #     o'     OoO'                                        
-#  #   ##
+Welcome to pylambda 0.02 (2011-02-21) <http://github.com/kid-a/pylambda>
+Press CTRL+D to exit
+"""
 
-# Welcome to pylambda 0.01 (2011-11-23) <http://github.com/kid-a/pylambda>
-# Press CTRL+D to exit
-# """
+lexer = None
+parser = None
+
+class PyLambdaREPL (cmd.Cmd):
+    """A REPL for PyLambda."""
+    def __init__(self, *args, **kwargs):
+        cmd.Cmd.__init__ (self)
+        self.prompt = PROMPT
+        self.intro = INTRO_STR
+
+    def emptyline (self):
+        pass
         
-#     def default (self, s):
-#         term = parser.parse (s)
-#         print term
-#         print "Bound Variables are: ", bound_vars (term)
+    def default (self, s):
+        start_time = time.time ()
+        term = parser.parse (s)
+        reduced_term = multi_step_beta_reduce (term)
+        elapsed_time = time.time () - start_time
+        print reduced_term
+        
+        print "One term reduced in (" + str(round(elapsed_time, 2)) + ") seconds"
+
+    def do_EOF(self, line):
+        print ""
+        print "Bye!"
+        return True
 
 
 if __name__ == "__main__":
     lexer = lex.lex ()
     parser = yacc.yacc ()
-    #print (parser.productions)
-    print parser.parse ('\\x.x')
-    print parser.parse ('a')
-    #PLCommandLine ().cmdloop ()
+    PyLambdaREPL ().cmdloop ()

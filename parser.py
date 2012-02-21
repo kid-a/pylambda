@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import copy
 import ply.yacc as yacc
 
 from terms import Variable as Variable
