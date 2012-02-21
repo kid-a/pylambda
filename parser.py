@@ -33,4 +33,4 @@ def p_application (p):
 
 def p_abstraction (p):
     ''' Term : BACKSLASH VARIABLE '.' Term '''
-    p[0] = Abstraction (p[2], p[4])
+    p[0] = Abstraction (Variable (p[2]), p[4])
