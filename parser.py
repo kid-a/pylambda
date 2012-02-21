@@ -18,7 +18,7 @@ from terms import Abstraction as Abstraction
 
 def p_start (p):
     ''' Program : Term '''
-    return p[1]
+    p[0] = p[1]
 
 
 def p_paren (p):
