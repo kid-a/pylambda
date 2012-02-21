@@ -1,4 +1,7 @@
+- investigate on \x.xx \x.xx
+- allow the definion of names
 - implement features of lci
-- implement history
-- make the command line more friendly
+- better error handling
 - implement unit tests
+- implement alpha conversion
+- implement church numerals
