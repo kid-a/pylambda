@@ -20,7 +20,6 @@ def p_start (p):
     ''' Program : Term '''
     p[0] = p[1]
 
-
 def p_paren (p):
     ''' Term : '(' Term ')' '''
     p[0] = p[2]

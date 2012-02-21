@@ -10,7 +10,7 @@
 from lexer import *
 from parser import *
 from terms import *
-from operations import *
+from algorithms import *
 
 ##------------------------------------------------------------------------------
 ## global imports

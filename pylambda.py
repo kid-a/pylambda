@@ -7,7 +7,7 @@ from lexer import *
 from parser import *
 from utilities import *
 
-from operations import bound_vars
+from algorithms import bound_vars
 
 # import cmd
 
