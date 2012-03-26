@@ -48,7 +48,7 @@ class PyLambdaREPL (cmd.Cmd):
         term = parser.parse (s)
         reduced_term = multi_step_beta_reduce (term)
         elapsed_time = time.time () - start_time
-        
+        print reduced_term
         print "One term reduced in (" + str(round(elapsed_time, 2)) + ") seconds"
 
     def do_EOF(self, line):

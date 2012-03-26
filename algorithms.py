@@ -30,7 +30,7 @@ def substitute (uTerm, uToSubstitute, uNewTerm):
     if isinstance (uTerm, Variable):
         if uTerm._name == uToSubstitute._name:
             return copy.deepcopy (uNewTerm)
-
+        
     elif isinstance (uTerm, Application):
         uTerm._first = substitute (uTerm._first, uToSubstitute, uNewTerm)
         uTerm._second = substitute (uTerm._second, uToSubstitute, uNewTerm)
@@ -60,7 +60,6 @@ def beta_reduce (uTerm):
         else:
             ## leftmost
             new_first = beta_reduce (uTerm._first)
-            ##print new_first, " ", uTerm._first
             if new_first != uTerm._first:
                 uTerm._first = new_first
                 return uTerm
@@ -83,10 +82,11 @@ def multi_step_beta_reduce (uTerm):
             new_t = beta_reduce (t)
             new_t_str = str(new_t)
 
+            ## !FIXME normal form should be used here
             if t_str == new_t_str:
                 for b, a in reductions:
                     print b, " -> ", a
-                return t
+                return new_t
 
             else:
                 reductions.append ((t_str, new_t_str))
