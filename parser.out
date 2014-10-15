@@ -1,0 +1,208 @@
+Created by PLY version 3.4 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    RPAREN
+    LPAREN
+
+Grammar
+
+Rule 0     S' -> Program
+Rule 1     Program -> Term
+Rule 2     Term -> ( Term )
+Rule 3     Term -> VARIABLE
+Rule 4     Term -> Term Term
+Rule 5     Term -> BACKSLASH VARIABLE . Term
+
+Terminals, with rules where they appear
+
+(                    : 2
+)                    : 2
+.                    : 5
+BACKSLASH            : 5
+LPAREN               : 
+RPAREN               : 
+VARIABLE             : 3 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+Program              : 0
+Term                 : 1 2 4 4 5
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Program
+    (1) Program -> . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+    Term                           shift and go to state 1
+    Program                        shift and go to state 4
+
+state 1
+
+    (1) Program -> Term .
+    (4) Term -> Term . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+    $end            reduce using rule 1 (Program -> Term .)
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+    Term                           shift and go to state 6
+
+state 2
+
+    (2) Term -> ( . Term )
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+    Term                           shift and go to state 7
+
+state 3
+
+    (5) Term -> BACKSLASH . VARIABLE . Term
+
+    VARIABLE        shift and go to state 8
+
+
+state 4
+
+    (0) S' -> Program .
+
+
+
+state 5
+
+    (3) Term -> VARIABLE .
+
+    (               reduce using rule 3 (Term -> VARIABLE .)
+    VARIABLE        reduce using rule 3 (Term -> VARIABLE .)
+    BACKSLASH       reduce using rule 3 (Term -> VARIABLE .)
+    $end            reduce using rule 3 (Term -> VARIABLE .)
+    )               reduce using rule 3 (Term -> VARIABLE .)
+
+
+state 6
+
+    (4) Term -> Term Term .
+    (4) Term -> Term . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+  ! shift/reduce conflict for ( resolved as shift
+  ! shift/reduce conflict for VARIABLE resolved as shift
+  ! shift/reduce conflict for BACKSLASH resolved as shift
+    $end            reduce using rule 4 (Term -> Term Term .)
+    )               reduce using rule 4 (Term -> Term Term .)
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+  ! (               [ reduce using rule 4 (Term -> Term Term .) ]
+  ! VARIABLE        [ reduce using rule 4 (Term -> Term Term .) ]
+  ! BACKSLASH       [ reduce using rule 4 (Term -> Term Term .) ]
+
+    Term                           shift and go to state 6
+
+state 7
+
+    (2) Term -> ( Term . )
+    (4) Term -> Term . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+    )               shift and go to state 9
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+    Term                           shift and go to state 6
+
+state 8
+
+    (5) Term -> BACKSLASH VARIABLE . . Term
+
+    .               shift and go to state 10
+
+
+state 9
+
+    (2) Term -> ( Term ) .
+
+    (               reduce using rule 2 (Term -> ( Term ) .)
+    VARIABLE        reduce using rule 2 (Term -> ( Term ) .)
+    BACKSLASH       reduce using rule 2 (Term -> ( Term ) .)
+    $end            reduce using rule 2 (Term -> ( Term ) .)
+    )               reduce using rule 2 (Term -> ( Term ) .)
+
+
+state 10
+
+    (5) Term -> BACKSLASH VARIABLE . . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+    Term                           shift and go to state 11
+
+state 11
+
+    (5) Term -> BACKSLASH VARIABLE . Term .
+    (4) Term -> Term . Term
+    (2) Term -> . ( Term )
+    (3) Term -> . VARIABLE
+    (4) Term -> . Term Term
+    (5) Term -> . BACKSLASH VARIABLE . Term
+
+  ! shift/reduce conflict for ( resolved as shift
+  ! shift/reduce conflict for VARIABLE resolved as shift
+  ! shift/reduce conflict for BACKSLASH resolved as shift
+    $end            reduce using rule 5 (Term -> BACKSLASH VARIABLE . Term .)
+    )               reduce using rule 5 (Term -> BACKSLASH VARIABLE . Term .)
+    (               shift and go to state 2
+    VARIABLE        shift and go to state 5
+    BACKSLASH       shift and go to state 3
+
+  ! (               [ reduce using rule 5 (Term -> BACKSLASH VARIABLE . Term .) ]
+  ! VARIABLE        [ reduce using rule 5 (Term -> BACKSLASH VARIABLE . Term .) ]
+  ! BACKSLASH       [ reduce using rule 5 (Term -> BACKSLASH VARIABLE . Term .) ]
+
+    Term                           shift and go to state 6
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ( in state 6 resolved as shift
+WARNING: shift/reduce conflict for VARIABLE in state 6 resolved as shift
+WARNING: shift/reduce conflict for BACKSLASH in state 6 resolved as shift
+WARNING: shift/reduce conflict for ( in state 11 resolved as shift
+WARNING: shift/reduce conflict for VARIABLE in state 11 resolved as shift
+WARNING: shift/reduce conflict for BACKSLASH in state 11 resolved as shift
