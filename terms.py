@@ -10,6 +10,9 @@ class Variable (object):
             if other._name == self._name:
                 return True
         return False
+        
+    def iswhnf(self):
+        return True
 
     # def __hash__ (self):
     #     return hash (self._name)
@@ -35,6 +38,14 @@ class Application (object):
                 (other._second == self._second)
         return False
 
+    def iswhnf(self):
+        if isinstance(self._first,Abstraction) :
+            return False
+        elif isinstance(self._first,Application) :
+            return self._first.iswhnf()
+        else :
+            return True
+
     # def __hash__ (self):
     #     return hash ((self._first, self._second))
 
@@ -52,6 +63,9 @@ class Abstraction (object):
             return (other._variable == self._variable) and \
                 (other._body == self._body)
         return False
+
+    def iswhnf(self):
+        return True
 
     # def __hash__ (self):
     #     return hash ((self._variable, self._body))
