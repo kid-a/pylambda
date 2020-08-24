@@ -85,7 +85,7 @@ def multi_step_beta_reduce (uTerm):
             ## !FIXME normal form should be used here
             if new_t.iswhnf() :
                 for b, a in reductions:
-                    print b, " -> ", a
+                    print(b, " -> ", a)
                 return new_t
 
             else:

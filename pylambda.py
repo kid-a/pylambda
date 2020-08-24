@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+#pip3 install ply
+#python3 pylambda
+
+
 import ply.lex as lex
 import ply.yacc as yacc
 
@@ -48,12 +52,12 @@ class PyLambdaREPL (cmd.Cmd):
         term = parser.parse (s)
         reduced_term = multi_step_beta_reduce (term)
         elapsed_time = time.time () - start_time
-        print reduced_term
-        print "One term reduced in (" + str(round(elapsed_time, 2)) + ") seconds"
+        print(reduced_term)
+        print("One term reduced in (" + str(round(elapsed_time, 2)) + ") seconds")
 
     def do_EOF(self, line):
-        print ""
-        print "Bye!"
+        print("")
+        print("Bye!")
         return True
 
 
