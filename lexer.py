@@ -31,9 +31,9 @@ if __name__ == "__main__":
         while True:
             try: tok = lexer.token()
             except LexError: 
-                print "Illegal expression"
+                print("Illegal expression")
                 break
             if not tok: break
-            print tok
+            print(tok)
         
 

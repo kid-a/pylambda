@@ -2,10 +2,10 @@ EXEC=pylambda
 TEST=tests
 
 run:
-	python $(EXEC).py
+	python3 $(EXEC).py
 
 unit-test:
-	python $(TEST).py
+	python3 $(TEST).py
 
 clean:
 	-rm *.pyc *~
